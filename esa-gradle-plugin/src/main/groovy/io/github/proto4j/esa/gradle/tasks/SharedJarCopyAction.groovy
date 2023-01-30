@@ -1,6 +1,7 @@
 package io.github.proto4j.esa.gradle.tasks
 
 import io.github.proto4j.esa.api.ISharedClassInfo
+import io.github.proto4j.esa.gradle.APIUtil
 import io.github.proto4j.esa.gradle.DexOptionsExtension
 import io.github.proto4j.esa.gradle.ESAPluginExtension
 import io.github.proto4j.esa.gradle.ESAPluginSpec
@@ -8,11 +9,9 @@ import io.github.proto4j.esa.gradle.action.AbstractStreamAction
 import io.github.proto4j.esa.gradle.action.DeletionStrategy
 import io.github.proto4j.esa.gradle.dx.DxAPI
 import io.github.proto4j.esa.gradle.dx.DxClassInfo
-import io.github.proto4j.esa.gradle.APIUtil
 import io.github.proto4j.esa.gradle.internal.ZipWriterImpl
-import io.github.proto4j.esa.gradle.zip.ApacheZipCompressor
+import io.github.proto4j.esa.gradle.zip.ZipCompressorFactory
 import io.github.proto4j.esa.gradle.zip.ZipWriter
-import org.apache.commons.io.FilenameUtils
 import org.apache.tools.zip.Zip64RequiredException
 import org.apache.tools.zip.ZipOutputStream
 import org.gradle.api.Action
@@ -28,17 +27,17 @@ import org.gradle.internal.UncheckedException
 import org.objectweb.asm.Type
 
 import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
 
 //@date 25.01.2023
 
-import javax.crypto.spec.SecretKeySpec
 import java.nio.file.Files
 import java.nio.file.Path
 
 class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
 
     private final DocumentationRegistry registry
-    private final ApacheZipCompressor compressor
+    private final ZipCompressorFactory compressor
 
     private final SecretKey encryptionKey
     private final DexOptionsExtension dexOptions
@@ -48,14 +47,13 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
 
     private final File zipFile
     private final File buildDir
-    private final File tmpDir
 
     private ZipWriter zipWriter
     private Type outputClass
     private Set<String> shadowedClasses
 
     public SharedJarCopyAction(
-            File zipFile, ApacheZipCompressor compressor, DocumentationRegistry registry,
+            File zipFile, ZipCompressorFactory compressor, DocumentationRegistry registry,
             File buildDir, ESAPluginExtension extension, DexOptionsExtension dexOptions
     ) {
         this.dexOptions = dexOptions
@@ -65,12 +63,8 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
         this.registry = registry
         this.buildDir = buildDir
         this.encryptionKey = new SecretKeySpec(extension.getKey().getBytes(), "AES")
-        this.tmpDir = new File(buildDir, TEMP_DIR_NAME)
         this.deletionStrategy = new InternalDeleteAction()
 
-        if (!tmpDir.exists()) {
-            tmpDir.createNewFile()
-        }
     }
 
     @Override
@@ -97,7 +91,7 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
         } catch (UncheckedIOException e) {
             if (e.cause instanceof Zip64RequiredException) {
                 throw new Zip64RequiredException(
-                        String.format("%s\n\nTo build this archive, please enable the zip64 extension.\nSee: %s",
+                        String.format("%s\n\nTo build an ESA file, please enable the zip64 extension.\nSee: %s",
                                 e.cause.message, registry.getDslRefForProperty(Zip, "zip64"))
                 )
             }
@@ -115,7 +109,7 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
 
         bos.close()
         if (encryptedJar.length == 0) {
-            System.err.println("ERROR - Could not encrypt JAR file!")
+            System.err.println("ERROR - Could not encrypt JAR file! (maybe wrong key or null-key")
             return WorkResults.didWork(false)
         }
 
@@ -132,7 +126,7 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
         }
 
         try {
-            APIUtil.writeOutputClass(outputPath, name, "name", encryptedJar, outputClass)
+            APIUtil.writeOutputClass(outputPath, name, extension.esaFilename, encryptedJar, outputClass)
         } catch (Throwable e) {
             throw UncheckedException.throwAsUncheckedException(e)
         }
@@ -160,7 +154,7 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
 
     void createDexFile() {
         Set<DxClassInfo> set = new HashSet<>()
-        shadowedClasses.forEach {path ->
+        shadowedClasses.forEach { path ->
             String basePath = buildDir.absolutePath + '/classes/'
             set.add(new DxClassInfo(basePath + path))
         }
@@ -197,13 +191,12 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
         @Override
         protected void visitFile(FileCopyDetails fileCopyDetails) {
             if (isClass(fileCopyDetails)) {
-                println fileCopyDetails.name + ": " + fileCopyDetails.relativePath + ", " + fileCopyDetails.relativeSourcePath
                 remap(fileCopyDetails)
             }
         }
 
         private void remap(FileCopyDetails fileCopyDetails) {
-            if (FilenameUtils.getExtension(fileCopyDetails.path) == 'class') {
+            if (isClass(fileCopyDetails)) {
                 try (InputStream is = fileCopyDetails.file.newInputStream()) {
 
                     ISharedClassInfo classInfo = APIUtil.inspect(is)
@@ -224,7 +217,16 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
                     }
 
                     if (classInfo.isOutputClass()) {
+                        if (outputClass != null) {
+                            System.err.println("WARNING: Ignoring second @Output class > " + classInfo.getName())
+                            return
+                        }
                         outputClass = classInfo.getType()
+
+                        if (classInfo.isShadowed()) {
+                            System.err.println("WARNING: @Output class is marked as @Shadow - will be ignored > "
+                                    + classInfo.getName())
+                        }
                         return
                     }
 

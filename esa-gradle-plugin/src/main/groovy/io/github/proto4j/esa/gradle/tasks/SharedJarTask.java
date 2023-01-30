@@ -3,7 +3,7 @@ package io.github.proto4j.esa.gradle.tasks; //@date 24.01.2023
 import io.github.proto4j.esa.gradle.DexOptionsExtension;
 import io.github.proto4j.esa.gradle.ESAPluginExtension;
 import io.github.proto4j.esa.gradle.ESAPluginSpec;
-import io.github.proto4j.esa.gradle.internal.ZipCompressorImpl;
+import io.github.proto4j.esa.gradle.internal.ZipCompressorFactoryImpl;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.file.FileCollection;
@@ -39,7 +39,7 @@ public class SharedJarTask extends Jar implements ESAPluginSpec {
         DocumentationRegistry registry = getServices().get(DocumentationRegistry.class);
         return new SharedJarCopyAction(
                 getArchiveFile().get().getAsFile(),
-                new ZipCompressorImpl(true, ZipOutputStream.DEFLATED),
+                new ZipCompressorFactoryImpl(true, ZipOutputStream.DEFLATED),
                 registry, getProject().getBuildDir(), extension, dexOptions);
     }
 
@@ -58,7 +58,7 @@ public class SharedJarTask extends Jar implements ESAPluginSpec {
         super.copy();
     }
 
-    public void setExtension(ESAPluginExtension extension) {
+    public void setPluginExtension(ESAPluginExtension extension) {
         this.extension = extension;
         if (extension != null && extension.shouldCreateDexFile()) {
             Attributes attributes = getManifest().getAttributes();

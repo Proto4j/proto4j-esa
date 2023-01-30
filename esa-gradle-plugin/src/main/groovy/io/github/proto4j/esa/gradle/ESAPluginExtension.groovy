@@ -10,6 +10,8 @@ class ESAPluginExtension {
 
     boolean createDexFile = false
 
+    String esaFilename = "name"
+
     ESAPluginExtension(Project project) {
         this.project = project
     }

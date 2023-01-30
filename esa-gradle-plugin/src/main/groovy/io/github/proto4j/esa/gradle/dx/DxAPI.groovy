@@ -24,27 +24,29 @@ final class DxAPI {
     /**
      * Uses the information provided by the {@code DexOptionsExtension} to generate a DEX-file
      * with all classes annotated ith {@code @Shadow}.
+     * <p>
+     * This method takes the following execution flow:
+     * <ol>
+     *     <li>Creating all necessary variables (contexts and so on) and the output DexFile. The
+     *        DxContext and CfContext variables are needed to translate/optimize the underlying
+     *        class file.</li>
+     *     <li>Process each file and parse it with DxAPI.createClassFile(). It is important to
+     *        set the --no-strict flag, otherwise a ParseException would be thrown. (this option
+     *        is set to true by default)</li>
+     *     <li>Translate the class file by optimizing it if possible. This action also adds the
+     *        returned ClassDefItem to the DexFile</li>
+     *     <li>By calling DexFile.toDex(), an array of bytes is created that contains the raw
+     *        dex-file. This content is transferred into the JAR-file that will be placed into
+     *        the source code</li>
+     * </ol>
      *
      * @param dxoe the options to apply when creating the DEX-file
-     * @return
+     * @return the generated DEX-file as raw bytes
      */
     static byte[] toDex(DexOptionsExtension dxoe) {
         if (dxoe == null) {
             throw new GradleException("DexExtension == null")
         }
-
-        // General processing:
-        //    1.  Creating all necessary variables (contexts and so on) and the output DexFile. The
-        //        DxContext and CfContext variables are needed to translate/optimize the underlying
-        //        class file.
-        //    2.  Process each file and parse it with DxAPI.createClassFile(). It is important to
-        //        set the --no-strict flag, otherwise a ParseException would be thrown. (this option
-        //        is set to true by default)
-        //    3.  Translate the class file by optimizing it if possible. This action also adds the
-        //        returned ClassDefItem to the DexFile
-        //    4.  By calling DexFile.toDex(), an array of bytes is created that contains the raw
-        //        dex-file. This content is transferred into the JAR-file that will be placed into
-        //        the source code
         DexFactory factory = DexFactory.getDefault()
 
         DexFile dexFile = factory.createDexFile(dxoe.getMinimumSdkVersion())
@@ -52,7 +54,7 @@ final class DxAPI {
         CfOptions cfOptions = new CfOptions()
 
         cfOptions.optimize = dxoe.shouldOptimize()
-        parser.setUseStrictMode(false)
+        parser.setUseStrictMode(dxoe.getUseStrict())
         try (DexOutputStream dos = factory.newOutputStream(dexFile, parser)) {
             for (DxClassInfo classInfo in dxoe.getClasses()) {
                 byte[] content = Files.readAllBytes(classInfo.getFilePath())

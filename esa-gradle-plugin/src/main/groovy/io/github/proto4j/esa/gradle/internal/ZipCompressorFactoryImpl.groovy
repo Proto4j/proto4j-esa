@@ -1,14 +1,14 @@
 package io.github.proto4j.esa.gradle.internal
 
-import io.github.proto4j.esa.gradle.zip.ApacheZipCompressor
+import io.github.proto4j.esa.gradle.zip.ZipCompressorFactory
 import org.apache.tools.zip.Zip64Mode
 import org.apache.tools.zip.ZipOutputStream
 
-class ZipCompressorImpl implements ApacheZipCompressor {
-    private final int method
+class ZipCompressorFactoryImpl implements ZipCompressorFactory {
+    private final int method // default is DEFLATED
     private final Zip64Mode mode
 
-    ZipCompressorImpl(boolean allow64Mode, int method) {
+    ZipCompressorFactoryImpl(boolean allow64Mode, int method) {
         this.method = method
         this.mode = allow64Mode ? Zip64Mode.AsNeeded : Zip64Mode.Never
     }
