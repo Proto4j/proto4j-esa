@@ -20,7 +20,7 @@ import io.github.proto4j.esa.*;
 
 import java.lang.reflect.Field;
 
-public abstract class SharedFieldExecutor<T> extends SharedExecutor<T> {
+public class SharedFieldExecutor<T> extends SharedExecutor<T> {
 
     private final Class<T> returnType;
 
@@ -28,11 +28,19 @@ public abstract class SharedFieldExecutor<T> extends SharedExecutor<T> {
     protected String targetFieldName;
 
     protected boolean recursiveLookup;
+    protected Object parent;
 
     public SharedFieldExecutor(SharedJar jar, Class<T> returnType,
                                String targetClassName, String targetFieldName,
                                boolean recursiveLookup) {
+        this(jar, returnType, null, targetClassName, targetFieldName, recursiveLookup);
+    }
+
+    public SharedFieldExecutor(SharedJar jar, Class<T> returnType, Object parent,
+                               String targetClassName, String targetFieldName,
+                               boolean recursiveLookup) {
         super(jar);
+        this.parent = parent;
         this.returnType = returnType;
         this.targetClassName = targetClassName;
         this.targetFieldName = targetFieldName;
@@ -44,7 +52,9 @@ public abstract class SharedFieldExecutor<T> extends SharedExecutor<T> {
         this.returnType = returnType;
     }
 
-    protected abstract Object get(Field field) throws Exception;
+    protected Object get(Field field) throws Exception {
+        return field.get(parent);
+    }
 
     @Override
     public T call() throws SharedException {

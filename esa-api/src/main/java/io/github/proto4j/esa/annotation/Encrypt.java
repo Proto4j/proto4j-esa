@@ -16,14 +16,34 @@
 
 package io.github.proto4j.esa.annotation;//@date 23.01.2023
 
+import io.github.proto4j.esa.SharedJar;
+import io.github.proto4j.esa.api.asm.StaticBlockWriter;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation used on fields (static and final) to indicate their content
+ * should be encrypted at runtime.
+ * <p>
+ * For more information about how the encryption is implemented with this
+ * annotation, see {@link SharedJar#wrap()} and {@link StaticBlockWriter}.
+ * <p>
+ * To <i>encrypt</i> a field's value, the initial value must be the result of
+ * {@code SharedJar#wrap()} and the field has to be static and final.
+ *
+ * @since 1.0
+ */
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.FIELD})
 public @interface Encrypt {
+    /**
+     * The value that needs to be encrypted at runtime.
+     *
+     * @return the plain text value
+     */
     String value();
 
 }

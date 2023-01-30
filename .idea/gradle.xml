@@ -11,6 +11,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/esa-android" />
             <option value="$PROJECT_DIR$/esa-api" />
+            <option value="$PROJECT_DIR$/esa-gradle-plugin" />
+            <option value="$PROJECT_DIR$/esa-gradle-plugin/buildSrc" />
           </set>
         </option>
       </GradleProjectSettings>

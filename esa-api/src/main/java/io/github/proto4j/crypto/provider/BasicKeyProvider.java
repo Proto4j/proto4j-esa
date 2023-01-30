@@ -16,8 +16,6 @@
 
 package io.github.proto4j.crypto.provider; //@date 27.01.2023
 
-import io.github.proto4j.crypto.key.SecureSecretKey;
-
 import javax.crypto.SecretKey;
 import java.security.KeyException;
 
