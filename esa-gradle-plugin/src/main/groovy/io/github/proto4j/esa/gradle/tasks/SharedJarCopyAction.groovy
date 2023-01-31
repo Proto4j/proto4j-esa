@@ -20,6 +20,8 @@ import org.gradle.api.file.FileCopyDetails
 import org.gradle.api.internal.DocumentationRegistry
 import org.gradle.api.internal.file.copy.CopyAction
 import org.gradle.api.internal.file.copy.CopyActionProcessingStream
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.WorkResult
 import org.gradle.api.tasks.WorkResults
 import org.gradle.api.tasks.bundling.Zip
@@ -34,25 +36,79 @@ import javax.crypto.spec.SecretKeySpec
 import java.nio.file.Files
 import java.nio.file.Path
 
+/**
+ * A customized copy action that inspects all source-code files and copies classes
+ * marked with {@code @Shadow} to the shared JAR file.
+ * <p>
+ * This action removes all class file copied into the generated JAR afterwards. In
+ * addition to that, classes that store {@code @Encrypt} will be transformed as well,
+ * so their fields are encrypted.
+ * <p>
+ * Exceptions are usually rethrown to enable issue tracking and warnings will be
+ * printed with {@code System.err}.
+ */
 class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
 
+    /**
+     * Used to print information about the ZipCompressor library
+     */
     private final DocumentationRegistry registry
+
+    /**
+     * The factory that creates the shared JAR output stream
+     */
     private final ZipCompressorFactory compressor
 
+    /**
+     * The key used for encryption
+     */
     private final SecretKey encryptionKey
+
+    /**
+     * The DEX-file configuration
+     */
     private final DexOptionsExtension dexOptions
+
+    /**
+     * The plugin configuration
+     */
     private final ESAPluginExtension extension
 
+    /**
+     * The action/ strategy that deletes any input elements.
+     *
+     * @see InternalDeleteAction
+     */
     private final DeletionStrategy deletionStrategy
 
+    /**
+     * The temporary ZIP-File stored in the libs/ directory.
+     */
     private final File zipFile
+
+    /**
+     * Orientation file object pointing at the build-directory of this project.
+     */
     private final File buildDir
 
+    /**
+     * Additional helper to create zip entries in the shared JAR file.
+     */
     private ZipWriter zipWriter
+
+    /**
+     * As there can be only one destination class, it is stored in a single
+     * {@code Type} variable.
+     */
     private Type outputClass
+
+    /**
+     * A collection of relative path values.
+     */
+    @PathSensitive(PathSensitivity.RELATIVE)
     private Set<String> shadowedClasses
 
-    public SharedJarCopyAction(
+    SharedJarCopyAction(
             File zipFile, ZipCompressorFactory compressor, DocumentationRegistry registry,
             File buildDir, ESAPluginExtension extension, DexOptionsExtension dexOptions
     ) {
@@ -67,6 +123,12 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
 
     }
 
+    /**
+     *
+     *
+     * @param stream the processing stream containing all resources
+     * @return the result of this action
+     */
     @Override
     WorkResult execute(CopyActionProcessingStream stream) {
         ZipOutputStream zipOutputStream
@@ -134,7 +196,14 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
         return WorkResults.didWork(true)
     }
 
-    public static <T extends Closeable> void with(T resource, Action<T> action) {
+    /**
+     * Executes the action on the given resource and closes the resource
+     * afterwards.
+     *
+     * @param resource the resource to be worked with
+     * @param action the action to be executed
+     */
+    static <T extends Closeable> void with(T resource, Action<T> action) {
         try {
             action.execute(resource)
         } catch (Throwable t) {
@@ -152,6 +221,10 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
         }
     }
 
+    /**
+     * Creates the DEX-file that stores all shared classes. This action is executed
+     * before removing all class files marked with {@code @Shadow}.
+     */
     void createDexFile() {
         Set<DxClassInfo> set = new HashSet<>()
         shadowedClasses.forEach { path ->
@@ -164,6 +237,9 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
         zipWriter.put(DX_FILENAME, new ByteArrayInputStream(rawFile))
     }
 
+    /**
+     * The internal deletion strategy: deletes a file or directory if present
+     */
     private class InternalDeleteAction extends DeletionStrategy {
 
         @Override
@@ -185,7 +261,7 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
 
         @Override
         protected void visitDirectory(FileCopyDetails fileCopyDetails) {
-
+            //nop
         }
 
         @Override

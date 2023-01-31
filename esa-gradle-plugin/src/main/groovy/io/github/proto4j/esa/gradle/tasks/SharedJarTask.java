@@ -19,13 +19,29 @@ import org.gradle.internal.impldep.org.apache.tools.zip.ZipOutputStream;
 import javax.annotation.Nonnull;
 import java.io.File;
 
+/**
+ * A simple {@code Jar}-Task that configures extra manifest attributes and uses
+ * a custom {@code CopyAction}.
+ *
+ * @see SharedJarCopyAction
+ */
 @CacheableTask
 public class SharedJarTask extends Jar implements ESAPluginSpec {
 
-    private FileCollection      sourceSetsClassesDirs;
+    /**
+     * The plugin configuration
+     */
     private ESAPluginExtension extension;
+
+    /**
+     * optional: the DEX-file configuration
+     */
     private DexOptionsExtension dexOptions;
 
+    /**
+     * Creates a new {@code Jar}-Task with {@link #JAR_BASE_NAME} as its base
+     * name and a default manifest instance.
+     */
     public SharedJarTask() {
         super();
         setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
@@ -33,6 +49,12 @@ public class SharedJarTask extends Jar implements ESAPluginSpec {
         setManifest(new DefaultManifest(getServices().get(FileResolver.class)));
     }
 
+    /**
+     * Creates the copy action for this task.
+     *
+     * @return the created opy action
+     * @see SharedJarCopyAction
+     */
     @Override
     @Nonnull
     protected CopyAction createCopyAction() {
@@ -43,21 +65,21 @@ public class SharedJarTask extends Jar implements ESAPluginSpec {
                 registry, getProject().getBuildDir(), extension, dexOptions);
     }
 
-    @InputFiles
-    @PathSensitive(PathSensitivity.RELATIVE)
-    FileCollection getSourceSetsClassesDirs() {
-        if (sourceSetsClassesDirs == null) {
-            ConfigurableFileCollection all = getProject().getObjects().fileCollection();
-            sourceSetsClassesDirs = all.filter(File::isDirectory);
-        }
-        return sourceSetsClassesDirs;
-    }
-
+    /**
+     * Executes this task.
+     */
     @TaskAction
     protected void copy() {
         super.copy();
     }
 
+    /**
+     * Applies the plugin configuration and additionally, adds the
+     * {@link #DX_ATTRIBUTE_KEY} to the manifest if a DEX-file should be
+     * created.
+     *
+     * @param extension the configuration
+     */
     public void setPluginExtension(ESAPluginExtension extension) {
         this.extension = extension;
         if (extension != null && extension.shouldCreateDexFile()) {
@@ -66,6 +88,11 @@ public class SharedJarTask extends Jar implements ESAPluginSpec {
         }
     }
 
+    /**
+     * Applies custom DEX-file configurations.
+     *
+     * @param dexOptions the DEX-file configuration
+     */
     public void setDexOptions(DexOptionsExtension dexOptions) {
         this.dexOptions = dexOptions;
     }

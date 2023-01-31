@@ -1,5 +1,8 @@
 package io.github.proto4j.esa.gradle.dx
 
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+
 import java.nio.file.Path
 
 /**
@@ -13,6 +16,7 @@ class DxClassInfo {
     /**
      * The absolute path of the Java class file
      */
+    @PathSensitive(PathSensitivity.ABSOLUTE)
     private String path
 
     /**

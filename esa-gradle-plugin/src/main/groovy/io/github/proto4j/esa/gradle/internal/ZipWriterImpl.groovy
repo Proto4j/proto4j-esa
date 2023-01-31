@@ -7,7 +7,6 @@ import org.apache.tools.zip.ZipOutputStream
 import org.gradle.api.Action
 
 class ZipWriterImpl implements ZipWriter {
-
     private ZipOutputStream zos
 
     ZipWriterImpl(ZipOutputStream zipOutputStream) {
