@@ -1,11 +1,11 @@
 Proto4j-ESA (Embedded Shared Archive)
 =====================================
 
-Runtime execution of embedded shared archive (ESA) files.
-
 <a href="https://github.com/Proto4j/proto4j-esa">
 <img src="https://github.com/Proto4j/proto4j-esa/blob/master/docs/esa_logo1.svg" alt="" height="180px" align="right" />
 </a>
+
+Runtime execution of embedded shared archive (ESA) files.
 
 ![Module](https://img.shields.io/static/v1?label=Module&message=ESA&color=9cf)
 ![Build](https://img.shields.io/static/v1?label=Java&message=>=8&color=green)
