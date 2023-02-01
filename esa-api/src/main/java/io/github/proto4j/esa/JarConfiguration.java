@@ -16,5 +16,10 @@
 
 package io.github.proto4j.esa;//@date 24.01.2023
 
+/**
+ * A tagging interface that all configuration interfaces must extend.
+ *
+ * @since 0.0.1
+ */
 public interface JarConfiguration {
 }

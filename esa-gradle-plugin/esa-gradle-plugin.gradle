@@ -15,7 +15,7 @@ dependencies {
 
     implementation 'org.ow2.asm:asm:9.4'
     implementation 'io.github.proto4j:proto4j-dx:1.16'
-    //implementation 'io.github.proto4j:proto4j-esa:1.0.0'
+    //implementation 'io.github.proto4j:proto4j-esa-api:0.0.1'
     implementation project(':esa-api')
 }
 

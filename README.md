@@ -1,16 +1,16 @@
 Proto4j-ESA (Embedded Shared Archive)
 =====================================
 
+Runtime execution of embedded shared archive (ESA) files.
+
 <a href="https://github.com/Proto4j/proto4j-esa">
 <img src="https://github.com/Proto4j/proto4j-esa/blob/master/docs/esa_logo1.svg" alt="" height="180px" align="right" />
 </a>
 
-Runtime execution of embedded shared archive (ESA) files.
-
 ![Module](https://img.shields.io/static/v1?label=Module&message=ESA&color=9cf)
 ![Build](https://img.shields.io/static/v1?label=Java&message=>=8&color=green)
-![Issues](https://img.shields.io/github/issues/Proto4j/proti4j-esa.svg)
-![Apache](https://img.shields.io/github/license/Proto4j/proti4j-esa.svg)
+![Issues](https://img.shields.io/github/issues/Proto4j/proto4j-esa.svg)
+![Apache](https://img.shields.io/github/license/Proto4j/proto4j-esa.svg)
 
 Proto4j-ESA is a code generation and transformation library that can create embedded shared archive (ESA) files that can
 be loaded and executed during the runtime of a Java application. This project is not limited to Java applications but
@@ -172,7 +172,7 @@ build-in class loader. There are two ways how to execute the _shared_ method:
 
 ## Developing
 
-
+Instructions follow...
 
 ## Contributing
 

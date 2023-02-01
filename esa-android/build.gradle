@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation project(':esa-api')
+    // Put your android.jar in the lib/ directory
     implementation fileTree(include: '*.jar', dir: 'lib')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'

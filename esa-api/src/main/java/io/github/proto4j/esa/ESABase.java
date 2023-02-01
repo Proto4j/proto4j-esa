@@ -34,6 +34,11 @@ import java.lang.reflect.Method;
 import java.security.Key;
 import java.util.zip.ZipInputStream;
 
+/*
+ * Basic implementation of an ESA. Class caching should be implemented by
+ * subclasses. There is only one method that should be used to access the
+ * stored secret key (#prepareCipher).
+ */
 public abstract class ESABase extends ESA {
 
     protected ICipher cipher;

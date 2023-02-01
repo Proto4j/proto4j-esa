@@ -276,6 +276,19 @@ public abstract class ESA {
 
         public abstract T configure(JarConfiguration configuration);
 
+        public abstract T setProvider(KeyProvider provider);
+
+        public abstract T setOutputClass(Class<?> cls);
+
+        public abstract T setOutputObject(Object outputObject);
+
+        @Deprecated
+        public abstract T setClassLoader(ClassLoader classLoader);
+
+        public abstract T setCipher(ICipher cipher);
+
+        public abstract ESA finish();
+
         public T configure(Supplier<? extends JarConfiguration> provider) {
             Objects.requireNonNull(provider);
 
@@ -288,20 +301,11 @@ public abstract class ESA {
             return setProvider(supplier.get());
         }
 
-        public abstract T setProvider(KeyProvider provider);
-
-        public abstract T setOutputClass(Class<?> cls);
-
         public T setOutputObject(Supplier<Object> provider) {
             Objects.requireNonNull(provider);
 
             return setOutputObject(provider.get());
         }
-
-        public abstract T setOutputObject(Object outputObject);
-
-        @Deprecated
-        public abstract T setClassLoader(ClassLoader classLoader);
 
         @Deprecated
         public T setClassLoader(Supplier<? extends ClassLoader> provider) {
@@ -309,14 +313,10 @@ public abstract class ESA {
             return setClassLoader(provider.get());
         }
 
-        public abstract T setCipher(ICipher cipher);
-
         public T setCipher(Supplier<? extends ICipher> provider) {
             Objects.requireNonNull(provider);
             return setCipher(provider);
         }
-
-        public abstract ESA finish();
 
     }
 }

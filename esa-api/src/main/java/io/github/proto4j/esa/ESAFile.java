@@ -22,13 +22,22 @@ import io.github.proto4j.esa.annotation.Output;
 /**
  * This tagging interface will be used on classes annotated with {@link Output}
  * as their base class.
- * <p>
  *
  * @see ICipher
  */
 public interface ESAFile {
 
+    /**
+     * Returns the ESA content as a {@code String}.
+     *
+     * @return the embedded shared archive file
+     */
     public abstract String getEncoded();
 
+    /**
+     * The ESA filename to use when exporting it.
+     *
+     * @return the filename
+     */
     public abstract String getFilename();
 }
