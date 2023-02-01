@@ -14,23 +14,8 @@
  *    limitations under the License.
  */
 
-package io.github.proto4j.esa.executor;//@date 23.01.2023
-
-import io.github.proto4j.esa.SharedException;
-import io.github.proto4j.esa.ESA;
-
-import java.util.concurrent.Callable;
-
-public abstract class SharedExecutor<R> implements Callable<R> {
-
-    private final ESA jar;
-
-    protected SharedExecutor(ESA esa) {this.jar = esa;}
-
-    public ESA getArchive() {
-        return jar;
-    }
-
-    @Override
-    public abstract R call() throws SharedException;
-}
+/**
+ * Classes of the Proto4j-Crypto module that were shipped to the
+ * Proto4j-ESA module instead as they are required to use all functionalities.
+ **/
+package io.github.proto4j.crypto;

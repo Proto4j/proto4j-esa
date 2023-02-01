@@ -5,5 +5,6 @@ import io.github.proto4j.esa.JarConfiguration;
 
 public interface AndroidJarConfiguration extends JarConfiguration {
 
+    // Required to save the DEX-File
     Context getContext();
 }

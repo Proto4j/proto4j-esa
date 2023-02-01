@@ -5,7 +5,7 @@ import dalvik.system.DexClassLoader;
 import io.github.proto4j.crypto.ICipher;
 import io.github.proto4j.esa.ESAFile;
 import io.github.proto4j.esa.JarConfiguration;
-import io.github.proto4j.esa.SharedJarBase;
+import io.github.proto4j.esa.ESABase;
 import io.github.proto4j.crypto.provider.KeyProvider;
 
 import javax.crypto.Cipher;
@@ -19,17 +19,17 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-public final class AndroidSharedJar extends SharedJarBase {
+public final class AndroidESA extends ESABase {
 
     private final Map<String, Class<?>> loadedClasses = new HashMap<>();
 
-    AndroidSharedJar(KeyProvider provider, ICipher cipher,
-                            JarConfiguration configuration) {
+    AndroidESA(KeyProvider provider, ICipher cipher,
+               JarConfiguration configuration) {
         this(provider, cipher, configuration, null);
     }
 
-    AndroidSharedJar(KeyProvider provider, ICipher cipher,
-                     JarConfiguration configuration, ClassLoader classLoader) {
+    AndroidESA(KeyProvider provider, ICipher cipher,
+               JarConfiguration configuration, ClassLoader classLoader) {
         super(provider, cipher,
               configuration instanceof AndroidJarConfiguration ? configuration : null,
               classLoader instanceof DexClassLoader ? classLoader : null);

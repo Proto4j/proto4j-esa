@@ -21,8 +21,8 @@ import io.github.proto4j.crypto.ICipher;
 
 import java.util.Objects;
 
-public abstract class AbstractSharedJarBuilder<T extends AbstractSharedJarBuilder<T>>
-        extends SharedJar.Builder<T> {
+public abstract class AbstractESABuilder<T extends AbstractESABuilder<T>>
+        extends ESA.Builder<T> {
 
     protected KeyProvider keyProvider;
     protected ICipher cipher;
@@ -32,7 +32,7 @@ public abstract class AbstractSharedJarBuilder<T extends AbstractSharedJarBuilde
     protected Object content;
 
     @Override
-    public abstract SharedJar finish();
+    public abstract ESA finish();
 
     protected abstract T this0();
 

@@ -1,15 +1,22 @@
-
-
 group = "io.github.proto4j"
-archivesBaseName = "proto4j-esa-api"
-version = "0.0.1"
+archivesBaseName = "esa-gradle-plugin"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+
+    implementation 'org.apache.ant:ant-xz:1.10.12'
+    implementation 'commons-io:commons-io:2.11.0'
+
     implementation 'org.ow2.asm:asm:9.4'
+    implementation 'io.github.proto4j:proto4j-dx:1.16'
+    //implementation 'io.github.proto4j:proto4j-esa:1.0.0'
+    implementation project(':esa-api')
 }
 
 java {
@@ -17,13 +24,8 @@ java {
     withJavadocJar()
 }
 
-javadoc {
-    options.tags = [
-            'apiNote:a:API Note:',
-            'implSpec:a:Implementation Requirements:',
-            'implNote:a:Implementation Note:'
-    ]
-}
+
+
 
 publishing {
     repositories {
@@ -48,18 +50,16 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
 
-            artifactId = 'proto4j-esa-api'
+            artifactId = 'esa-gradle-plugin'
             groupId = 'io.github.proto4j'
             version = '0.0.1'
 
-            description = 'Embedded Shared Archive (ESA) API module'
-
             pom {
-                name = 'Proto4j-ESA API'
+                name = 'Proto4j-ESA Gradle-Plugin'
                 packaging = 'jar'
-                artifactId = 'proto4j-esa-api'
+                artifactId = 'esa-gradle-plugin'
                 groupId = 'io.github.proto4j'
-                description = 'Embedded Shared Archive (ESA) API module.'
+                description = 'Gradle integration for Proto4j-ESA'
                 url = 'https://github.com/Proto4j/proto4j-esa'
 
                 scm {

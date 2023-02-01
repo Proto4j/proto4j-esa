@@ -18,6 +18,7 @@ package io.github.proto4j.crypto.key; //@date 27.01.2023
 
 import javax.crypto.SecretKey;
 
+//WARNING: Direct access to the encryption/decryption key
 public final class DirectSecretKey implements SecretKey {
 
     private final String algorithm;
@@ -30,7 +31,7 @@ public final class DirectSecretKey implements SecretKey {
 
     @Override
     public String getAlgorithm() {
-        return null;
+        return algorithm;
     }
 
     @Override

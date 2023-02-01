@@ -16,7 +16,32 @@
 
 package io.github.proto4j.crypto;//@date 24.01.2023
 
+/**
+ * Redefinition of the {@link java.util.function.Function} interface that
+ * can throw any exception.
+ *
+ * @param <T> the input type
+ * @param <R> the result type
+ */
 public interface EncryptionWrapper<T, R> {
 
+    /**
+     * Creates wrapper that returns the input value.
+     *
+     * @return the input value
+     * @param <U> the input type
+     */
+    static <U> EncryptionWrapper<U, U> identity() {
+        return x -> x;
+    }
+
+    /**
+     * Encrypts the given input using a custom encryption algorithm or a
+     * shared cipher instance.
+     *
+     * @param value the value to be encrypted
+     * @return the encrypted value
+     * @throws Exception if an error occurs during encryption
+     */
     public abstract R encrypt(T value) throws Exception;
 }

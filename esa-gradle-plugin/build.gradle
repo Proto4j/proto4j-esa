@@ -1,32 +1,8 @@
 plugins {
     id 'java'
     id 'groovy'
+    id 'maven-publish'
+    id 'signing'
 }
 
-group 'org.proto4j'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation gradleApi()
-    implementation localGroovy()
-
-    implementation 'org.apache.ant:ant-xz:1.10.12'
-    implementation 'commons-io:commons-io:2.11.0'
-
-    implementation 'org.ow2.asm:asm:9.4'
-    implementation 'io.github.proto4j:proto4j-dx:1.16'
-
-    implementation project(':esa-api')
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
-
-test {
-    useJUnitPlatform()
-}
-
+apply from: 'esa-gradle-plugin.gradle'

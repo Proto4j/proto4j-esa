@@ -12,6 +12,7 @@ import io.github.proto4j.esa.gradle.dx.DxClassInfo
 import io.github.proto4j.esa.gradle.internal.ZipWriterImpl
 import io.github.proto4j.esa.gradle.zip.ZipCompressorFactory
 import io.github.proto4j.esa.gradle.zip.ZipWriter
+import org.apache.commons.io.output.ByteArrayOutputStream
 import org.apache.tools.zip.Zip64RequiredException
 import org.apache.tools.zip.ZipOutputStream
 import org.gradle.api.Action
@@ -124,7 +125,7 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
     }
 
     /**
-     *
+     * Creates an embedded shared archive (ESA)
      *
      * @param stream the processing stream containing all resources
      * @return the result of this action
@@ -178,6 +179,7 @@ class SharedJarCopyAction implements CopyAction, ESAPluginSpec {
         String outputPath
         String name
         if (outputClass == null) {
+            System.err.println("WARNING: No @Output class specified (defaulting to defpackage/JarContent)")
             //TODO: extract configurable variables
             outputClass = Type.getType("Ldefpackage/JarContent;")
             outputPath = buildDir.absolutePath + "/classes/java/main/defpackage/"

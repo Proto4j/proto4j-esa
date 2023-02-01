@@ -18,7 +18,7 @@ package io.github.proto4j.crypto.provider; //@date 27.01.2023
 
 import io.github.proto4j.crypto.key.DestroyableSecretKey;
 
-public class PlainTextKeyProvider extends BasicKeyProvider {
+public final class PlainTextKeyProvider extends BasicKeyProvider {
 
     public PlainTextKeyProvider(byte[] key, String algorithm) {
         super(new DestroyableSecretKey(key, algorithm));

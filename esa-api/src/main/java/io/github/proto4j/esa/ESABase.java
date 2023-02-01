@@ -27,13 +27,14 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.Key;
 import java.util.zip.ZipInputStream;
 
-public abstract class SharedJarBase extends SharedJar {
+public abstract class ESABase extends ESA {
 
     protected ICipher cipher;
     protected JarConfiguration configuration;
@@ -41,20 +42,15 @@ public abstract class SharedJarBase extends SharedJar {
 
     private volatile boolean loaded = false;
 
-    public SharedJarBase(KeyProvider provider, ICipher cipher, JarConfiguration configuration,
-                         ClassLoader classLoader) {
+    public ESABase(KeyProvider provider, ICipher cipher, JarConfiguration configuration,
+                   ClassLoader classLoader) {
         super(provider);
         this.cipher = cipher;
         this.configuration = configuration;
         this.classLoader = classLoader;
     }
 
-    /**
-     * Creates a new <code>SharedJar</code> instance with the given key provider.
-     *
-     * @param provider the provider to use
-     */
-    protected SharedJarBase(KeyProvider provider) {
+    protected ESABase(KeyProvider provider) {
         super(provider);
     }
 
@@ -89,8 +85,7 @@ public abstract class SharedJarBase extends SharedJar {
                 target = cachedClass.getDeclaredMethod(decName, argTypes);
             } catch (NoSuchMethodException e2) {
                 throw new NoSuchSharedMethodException("Could not locate method: " + decName);
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (Exception ignored) {
             }
         }
 
@@ -102,7 +97,7 @@ public abstract class SharedJarBase extends SharedJar {
     }
 
     @Override
-    public Field getSharedField(String cls, String name, boolean recursive) throws NoSuchSharedFieldException {
+    public Field getSharedField(String cls, String name, boolean inherited) throws NoSuchSharedFieldException {
         Class<?> cachedClass = getClass(cls);
 
         if (cachedClass == null) try {
@@ -128,7 +123,7 @@ public abstract class SharedJarBase extends SharedJar {
                 decName = new String(cipher.doFinal(name.getBytes()));
                 target = cachedClass.getDeclaredField(decName);
             } catch (Exception e2) {
-                if (!recursive) {
+                if (!inherited) {
                     throw new NoSuchSharedFieldException("Could not locate Field", e2);
                 }
             }
@@ -176,7 +171,7 @@ public abstract class SharedJarBase extends SharedJar {
     }
 
     @Override
-    public Object getInstance(String cls) throws SharedException {
+    public Object getInstance(String cls, Object... argv) throws SharedException {
         Class<?> clsInstance = null;
         try {
             clsInstance = getClass(cls);
@@ -190,12 +185,38 @@ public abstract class SharedJarBase extends SharedJar {
             }
         }
         try {
+            if (argv == null ||argv.length == 0) {
+                return clsInstance.getDeclaredConstructor().newInstance();
+            }
+
+            Class<?>[] classes = new Class[argv.length];
+            for (int i = 0; i < argv.length; i++) {
+                classes[i] = argv[i] != null ? argv[i].getClass() : null;
+            }
+
+            for (Constructor<?> constructor : clsInstance.getDeclaredConstructors()) {
+                Class<?>[] types = constructor.getParameterTypes();
+                if (types.length == classes.length) {
+                    if (isEqual(classes, types)) {
+                        return constructor.newInstance(argv);
+                    }
+                }
+            }
             return clsInstance.getDeclaredConstructor().newInstance();
         } catch (InvocationTargetException e) {
             throw new SharedInvocationException(e.getTargetException());
         } catch (Exception e) {
             throw new InvocationException(e);
         }
+    }
+
+    private static boolean isEqual(Class<?>[] classes, Class<?>[] types) {
+        for (int i = 0; i < types.length; i++) {
+            if (classes[i] != null && (!types[i].isAssignableFrom(classes[i]))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

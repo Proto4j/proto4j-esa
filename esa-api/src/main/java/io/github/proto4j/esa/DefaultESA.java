@@ -31,11 +31,11 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-final class DefaultSharedJar extends SharedJarBase {
+final class DefaultESA extends ESABase {
 
     private final Map<String, Class<?>> loadedClasses = new HashMap<>();
 
-    DefaultSharedJar(KeyProvider provider, ICipher cipher, JarConfiguration configuration) {
+    DefaultESA(KeyProvider provider, ICipher cipher, JarConfiguration configuration) {
         super(provider, cipher, configuration, new TypeClassLoader());
     }
 

@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.Random;
 
+@Deprecated
 public final class CryptoUtil {
 
     private CryptoUtil() {}

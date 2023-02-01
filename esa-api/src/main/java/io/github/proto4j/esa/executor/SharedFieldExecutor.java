@@ -30,16 +30,16 @@ public class SharedFieldExecutor<T> extends SharedExecutor<T> {
     protected boolean recursiveLookup;
     protected Object parent;
 
-    public SharedFieldExecutor(SharedJar jar, Class<T> returnType,
+    public SharedFieldExecutor(ESA esa, Class<T> returnType,
                                String targetClassName, String targetFieldName,
                                boolean recursiveLookup) {
-        this(jar, returnType, null, targetClassName, targetFieldName, recursiveLookup);
+        this(esa, returnType, null, targetClassName, targetFieldName, recursiveLookup);
     }
 
-    public SharedFieldExecutor(SharedJar jar, Class<T> returnType, Object parent,
+    public SharedFieldExecutor(ESA esa, Class<T> returnType, Object parent,
                                String targetClassName, String targetFieldName,
                                boolean recursiveLookup) {
-        super(jar);
+        super(esa);
         this.parent = parent;
         this.returnType = returnType;
         this.targetClassName = targetClassName;
@@ -47,7 +47,7 @@ public class SharedFieldExecutor<T> extends SharedExecutor<T> {
         this.recursiveLookup = recursiveLookup;
     }
 
-    public SharedFieldExecutor(SharedJar jar, Class<T> returnType) {
+    public SharedFieldExecutor(ESA jar, Class<T> returnType) {
         super(jar);
         this.returnType = returnType;
     }
@@ -67,7 +67,7 @@ public class SharedFieldExecutor<T> extends SharedExecutor<T> {
         }
 
         try {
-            Field field = getJar().getSharedField(
+            Field field = getArchive().getSharedField(
                     targetClassName, targetFieldName, recursiveLookup);
 
             if (field != null) {

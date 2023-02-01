@@ -39,7 +39,7 @@ import java.util.Map;
  *         Type myAnnotationType = Type.getType(MyAnnotation.class);
  *         // Validate if it is the annotation we are looking for
  *         if (descriptor.equals(myAnnotationType.getDescriptor())) {
- *             return new TypedAnnotationVisitor<>(MyAnnotation.class).onFinish(map -> {
+ *             return new TypedAnnotationVisitor&lt;&gt;(MyAnnotation.class).onFinish(map -&gt; {
  *                   // handle the collected values...
  *             });
  *         }

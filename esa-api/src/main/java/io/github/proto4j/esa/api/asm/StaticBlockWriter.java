@@ -16,7 +16,7 @@
 
 package io.github.proto4j.esa.api.asm; //@date 23.01.2023
 
-import io.github.proto4j.esa.SharedJar;
+import io.github.proto4j.esa.ESA;
 import io.github.proto4j.esa.api.EncryptedFieldInfo;
 import io.github.proto4j.esa.api.IFieldInfo;
 import org.objectweb.asm.MethodVisitor;
@@ -26,17 +26,17 @@ import org.objectweb.asm.Opcodes;
  * A <code>StaticBlockWriter</code> is used to transform the bytecode of a java
  * class file, especially the <code>clinit</code>-blocks.
  * <p>
- * This method visitor tries to remove the {@link SharedJar#wrap()} statement
+ * This method visitor tries to remove the {@link ESA#wrap()} statement
  * and turn it into the encrypted value by its field info. Actually, there is
  * only one small change in the bytecode:
  * <pre>
  *     // Instead of
- *     INVOKESTATIC SharedJar, wrap, ()V;, false
+ *     INVOKESTATIC ESA, wrap, ()V;, false
  *     // there will be an lcd statement
  *     LDC "encrypted string"
  * </pre>
  *
- * @see SharedJar#wrap()
+ * @see ESA#wrap()
  */
 public final class StaticBlockWriter extends MethodVisitor {
 
@@ -98,9 +98,9 @@ public final class StaticBlockWriter extends MethodVisitor {
      */
     @Override
     public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-        // All method calls to SharedJar.wrap() will be removed. The hardcoded
+        // All method calls to ESA.wrap() will be removed. The hardcoded
         // values will be inserted instead.
-        if (!name.equals("wrap") && !owner.equals(SharedJar.TYPE.getInternalName())) {
+        if (!name.equals("wrap") && !owner.equals(ESA.TYPE.getInternalName())) {
             super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
         }
     }

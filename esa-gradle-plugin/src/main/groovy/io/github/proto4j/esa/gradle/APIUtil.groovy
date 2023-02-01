@@ -17,7 +17,7 @@
 package io.github.proto4j.esa.gradle
 
 import io.github.proto4j.crypto.ICipher
-import io.github.proto4j.esa.SharedJar
+import io.github.proto4j.esa.ESA
 import io.github.proto4j.esa.annotation.Output
 import io.github.proto4j.esa.api.*
 import io.github.proto4j.esa.api.asm.ClassInfoCollector
@@ -71,7 +71,7 @@ final class APIUtil {
         }
 
         EncryptedFieldInfo field = IFieldInfo.getEncryptedInstance(
-                Type.getType(String.class), SharedJar.ENCODED,
+                Type.getType(String.class), ESA.ENCODED,
                 new String(encryptedJar), Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL
         )
         return new Output.OutputClassInfo(cls, filename, field)

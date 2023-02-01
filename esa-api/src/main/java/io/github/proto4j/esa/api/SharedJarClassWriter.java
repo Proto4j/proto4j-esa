@@ -18,7 +18,7 @@ package io.github.proto4j.esa.api; //@date 24.01.2023
 
 import org.objectweb.asm.*;
 import io.github.proto4j.esa.ESAFile;
-import io.github.proto4j.esa.SharedJar;
+import io.github.proto4j.esa.ESA;
 import io.github.proto4j.esa.api.asm.IClassCreator;
 
 import java.io.IOException;
@@ -80,9 +80,9 @@ public final class SharedJarClassWriter implements IClassCreator {
             String value = (String) info.getValue();
             cw.visitField(info.getModifiers(),
                           info.getName(), info.getDescriptor(), null, value);
-            if (info.getName().equals(SharedJar.ENCODED)) {
+            if (info.getName().equals(ESA.ENCODED)) {
                 implementEncoded(cw, info.getName(), value.length());
-            } else if (info.getName().equals(SharedJar.NAME)) {
+            } else if (info.getName().equals(ESA.NAME)) {
                 implementFilename(cw, info.getName(), info.getName().length());
             }
         }
@@ -176,10 +176,10 @@ public final class SharedJarClassWriter implements IClassCreator {
                 super.visitField(field.getModifiers(), field.getName(),
                                  field.getType().getDescriptor(), null,
                                  field.getValue());
-                if (field.getName().equals(SharedJar.NAME)) {
-                    implementFilename(getDelegate(), SharedJar.NAME, field.getName().length());
-                } else if (field.getName().equals(SharedJar.ENCODED)) {
-                    implementEncoded(getDelegate(), SharedJar.ENCODED, ((String)field.getValue()).length());
+                if (field.getName().equals(ESA.NAME)) {
+                    implementFilename(getDelegate(), ESA.NAME, field.getName().length());
+                } else if (field.getName().equals(ESA.ENCODED)) {
+                    implementEncoded(getDelegate(), ESA.ENCODED, ((String)field.getValue()).length());
                 }
             }
             fieldsSet = true;

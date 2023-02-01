@@ -22,6 +22,12 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Locale;
 
+/**
+ * Reimplementation of the {@link javax.crypto.spec.SecretKeySpec} by Java that
+ * destroys the stored secret key upon calling {@link #destroy()}.
+ *
+ * @see javax.crypto.spec.SecretKeySpec
+ */
 public class DestroyableSecretKey implements SecretKey {
 
     private final byte[] key;

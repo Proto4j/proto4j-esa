@@ -18,7 +18,7 @@ package io.github.proto4j.esa.executor; //@date 23.01.2023
 
 import io.github.proto4j.esa.NoSuchTargetException;
 import io.github.proto4j.esa.SharedException;
-import io.github.proto4j.esa.SharedJar;
+import io.github.proto4j.esa.ESA;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,15 +32,15 @@ public class SharedMethodExecutor<T> extends SharedExecutor<T> {
 
     protected Class<?>[] argumentTypes;
 
-    public SharedMethodExecutor(SharedJar jar, Class<T> returnType) {
-        super(jar);
+    public SharedMethodExecutor(ESA esa, Class<T> returnType) {
+        super(esa);
         this.returnType = returnType;
     }
 
-    public SharedMethodExecutor(SharedJar jar, Class<T> returnType,
+    public SharedMethodExecutor(ESA esa, Class<T> returnType,
                                 String targetMethodName, String targetClassName,
                                 Class<?>[] argumentTypes) {
-        super(jar);
+        super(esa);
         this.returnType = returnType;
         this.targetMethodName = targetMethodName;
         this.targetClassName = targetClassName;
@@ -68,7 +68,7 @@ public class SharedMethodExecutor<T> extends SharedExecutor<T> {
         }
 
         if (target == null) try {
-            target = getJar().getSharedMethod(
+            target = getArchive().getSharedMethod(
                     targetClassName, targetMethodName, argumentTypes);
         } catch (Exception e) {
             throw new InvocationException(e);

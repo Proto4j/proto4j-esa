@@ -24,6 +24,37 @@ import java.security.*;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Base64;
 
+/**
+ * Basic implementation of a {@code java.security} cipher engine. Is it using
+ * the default cipher instance of {@code AES/CBC/PKCS5Padding} for decryption
+ * and encryption.
+ * <p>
+ * The following workflow illustrates how this cipher engine decrypts an input
+ * JAR-file with a {@link SecretKey}:
+ * <pre>
+ * +-----------------------+
+ * | encrypted JAR: byte[] |
+ * +----------+------------+
+ *            |
+ *            |
+ *            | Base64.decode()
+ *            |
+ *            |
+ * +----------v------------+--------------+
+ * | encrypted JAR: byte[] | iv: byte[16] |
+ * +----------+------------+--------------+
+ *            |
+ *            | AESCipher.init(secretKey, iv)
+ *            |
+ *            | AESCipher.doFinal()
+ *            |
+ * +----------v------------+
+ * | decrypted JAR: byte[] |
+ * +-----------------------+
+ * </pre>
+ *
+ * @see ICipher
+ */
 final class DefaultAESCipher implements ICipher {
 
     /**

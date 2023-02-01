@@ -16,7 +16,7 @@
 
 package io.github.proto4j.esa.annotation;//@date 23.01.2023
 
-import io.github.proto4j.esa.SharedJar;
+import io.github.proto4j.esa.ESA;
 import io.github.proto4j.esa.api.AbstractClassInfo;
 import io.github.proto4j.esa.api.EncryptedFieldInfo;
 import io.github.proto4j.esa.api.IFieldInfo;
@@ -98,7 +98,7 @@ public @interface Output {
         public OutputClassInfo(Type type, String filename, EncryptedFieldInfo data) {
             super(type);
             IFieldInfo field = IFieldInfo.getInstance(
-                    Type.getType(String.class), SharedJar.NAME,
+                    Type.getType(String.class), ESA.NAME,
                     filename, Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC);
             // Only two fields are allowed
             setFields(new IFieldInfo[]{ field, data });

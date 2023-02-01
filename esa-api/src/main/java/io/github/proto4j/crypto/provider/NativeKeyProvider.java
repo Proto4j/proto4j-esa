@@ -16,10 +16,43 @@
 
 package io.github.proto4j.crypto.provider; //@date 27.01.2023
 
+import io.github.proto4j.crypto.key.DestroyableSecretKey;
+
+/**
+ * Native key providers should use a library to in order to get the
+ * used decryption and encryption key.
+ * <p>
+ * A basic implementation of this class could be the following:
+ * <pre>
+ *     class FooLibKeyProvider extends NativeKeyProvider {
+ *         public FooLibKeyProvider() {
+ *             super("foo_native");
+ *         }
+ *
+ *         public native byte[] getKey0();
+ *
+ *         &#064;Override
+ *         public Key getSecretKey() {
+ *             return new {@link DestroyableSecretKey}(getKey0());
+ *         }
+ *     }
+ * </pre>
+ *
+ * @see KeyProvider
+ */
 public abstract class NativeKeyProvider extends KeyProvider {
 
+    /**
+     * The library name
+     */
     private final String libName;
 
+    /**
+     * Creates a new {@code NativeKeyProvider} with the given native library
+     * name and tries load it.
+     *
+     * @param libName the library to load
+     */
     public NativeKeyProvider(String libName) {
         this.libName = libName;
         if (!loadLibrary()) {
@@ -27,6 +60,11 @@ public abstract class NativeKeyProvider extends KeyProvider {
         }
     }
 
+    /**
+     * Tries to load the shared library
+     *
+     * @return {@code true} on success
+     */
     public boolean loadLibrary() {
         try {
             System.loadLibrary(libName);
@@ -36,6 +74,11 @@ public abstract class NativeKeyProvider extends KeyProvider {
         }
     }
 
+    /**
+     * Returns the configured library name.
+     *
+     * @return the library name
+     */
     public String getLibraryName() {
         return libName;
     }

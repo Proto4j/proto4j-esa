@@ -1,33 +1,33 @@
 package org.proto4j.crypto.android; //@date 28.01.2023
 
 import io.github.proto4j.esa.ESAFile;
-import io.github.proto4j.esa.AbstractSharedJarBuilder;
+import io.github.proto4j.esa.AbstractESABuilder;
 import io.github.proto4j.esa.JarConfiguration;
-import io.github.proto4j.esa.SharedJar;
+import io.github.proto4j.esa.ESA;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.security.GeneralSecurityException;
 import java.util.Objects;
 
-public final class AndroidSharedJarBuilder
-        extends AbstractSharedJarBuilder<AndroidSharedJarBuilder> {
+public final class AndroidESABuilder
+        extends AbstractESABuilder<AndroidESABuilder> {
 
     @Override
-    public AndroidSharedJarBuilder configure(JarConfiguration configuration) {
+    public AndroidESABuilder configure(JarConfiguration configuration) {
         this.configuration = configuration instanceof AndroidJarConfiguration
                 ? (AndroidJarConfiguration) configuration : null;
         return this;
     }
 
     @Override
-    public SharedJar finish() {
+    public ESA finish() {
         Objects.requireNonNull(configuration, "config");
         Objects.requireNonNull(keyProvider, "provider");
         Objects.requireNonNull(content, "content");
         Objects.requireNonNull(cipher, "cipher");
 
-        SharedJar jar = new AndroidSharedJar(keyProvider, cipher, configuration);
+        ESA jar = new AndroidESA(keyProvider, cipher, configuration);
 
         if (!(content instanceof ESAFile)) {
             throw new ClassFormatError("Invalid output object of type " + content.getClass().getName());
@@ -44,7 +44,7 @@ public final class AndroidSharedJarBuilder
     }
 
     @Override
-    protected AndroidSharedJarBuilder this0() {
+    protected AndroidESABuilder this0() {
         return this;
     }
 }

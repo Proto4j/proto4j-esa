@@ -23,20 +23,20 @@ import java.io.UncheckedIOException;
 import java.security.GeneralSecurityException;
 import java.util.Objects;
 
-public class DefaultBuilder extends AbstractSharedJarBuilder<DefaultBuilder> {
+public class DefaultBuilder extends AbstractESABuilder<DefaultBuilder> {
 
     public DefaultBuilder() {
-        setCipher(ICipher.getInstance());
+        setCipher(ICipher.newDefaultInstance());
     }
 
     @Override
-    public SharedJar finish() {
+    public ESA finish() {
         Objects.requireNonNull(configuration, "config");
         Objects.requireNonNull(keyProvider, "provider");
         Objects.requireNonNull(content, "content");
         Objects.requireNonNull(cipher, "cipher");
 
-        SharedJar jar = new DefaultSharedJar(keyProvider, cipher, configuration);
+        ESA jar = new DefaultESA(keyProvider, cipher, configuration);
 
         if (!(content instanceof ESAFile)) {
             throw new ClassFormatError("Invalid output object of type " + content.getClass().getName());

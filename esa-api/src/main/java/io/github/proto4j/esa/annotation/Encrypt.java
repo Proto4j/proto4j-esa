@@ -16,7 +16,7 @@
 
 package io.github.proto4j.esa.annotation;//@date 23.01.2023
 
-import io.github.proto4j.esa.SharedJar;
+import io.github.proto4j.esa.ESA;
 import io.github.proto4j.esa.api.asm.StaticBlockWriter;
 
 import java.lang.annotation.ElementType;
@@ -29,10 +29,10 @@ import java.lang.annotation.Target;
  * should be encrypted at runtime.
  * <p>
  * For more information about how the encryption is implemented with this
- * annotation, see {@link SharedJar#wrap()} and {@link StaticBlockWriter}.
+ * annotation, see {@link ESA#wrap()} and {@link StaticBlockWriter}.
  * <p>
  * To <i>encrypt</i> a field's value, the initial value must be the result of
- * {@code SharedJar#wrap()} and the field has to be static and final.
+ * {@code ESA#wrap()} and the field has to be static and final.
  *
  * @since 1.0
  */

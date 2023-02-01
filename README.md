@@ -81,7 +81,7 @@ class Foo implements ESAFile, Serializable {
 }
 ```
 
-Finally, a `SharedJar` object has to be created (in order to interact with classes that have been marked as _shared_).
+Finally, a `esa` object has to be created (in order to interact with classes that have been marked as _shared_).
 Every shared Jar can be configured with the following options:
 
 | Name               | Description                                                                                                                                                                                                                                                                                                                                 |
@@ -91,10 +91,10 @@ Every shared Jar can be configured with the following options:
 | `ICipher`          | The cipher implementation used to decrypt the ESA file. By default, `ICipher.getDefault()` is called to retrieve an instance.                                                                                                                                                                                                               |
 | `OutputObject`     | This options can have multiple ways on how to configure it:<br/><ul><li>You can write `new YourOutputClass()` to add an instance of the marked output class directly, or</li><li>You can pass the class object of the annotated output class, or</li><li>You provide a `Supplier` that returns an instance of the `ESAFile` class</li></ul> |
 
-As a result, the final code you would write to create a default `SharedJar` instance would look like this:
+As a result, the final code you would write to create a default `ESA` instance would look like this:
 
 ```java
-SharedJar jar = new DefaultBuilder()
+ESA esa = new DefaultBuilder()
         // can be any class implementing JarConfiguration
         .configure(new MyConfiguration())
         // class annotated with @Output
@@ -124,7 +124,7 @@ Make sure all references to this class are removed, otherwise `ClassDefNotFound`
 build-in class loader. There are two ways how to execute the _shared_ method:
 
 1. Write a class that extends the `SharedMethodExecutor` and sets all required fields automatically. The `Encrypt`
-   annotation together with `SharedJar.wrap()` can be used to encrypt the shared class references at runtime. For more
+   annotation together with `ESA.wrap()` can be used to encrypt the shared class references at runtime. For more
    information on how the wrap is done, refer to the Wiki of this project.
 
    ```java
@@ -133,13 +133,13 @@ build-in class loader. There are two ways how to execute the _shared_ method:
    class HelloWorldExecutor extends SharedMethodExecutor<String> {
         
         @Encrypt("org.example.Message")  // the string will be encrypted,
-        private static final String className = SharedJar.wrap();
+        private static final String className = ESA.wrap();
    
         // so it will be decrypted before searching the method
         @Encrypt("getMessage") 
-        private static final String methodName = SharedJar.wrap();
+        private static final String methodName = ESA.wrap();
    
-        public HelloWorldExecutor(SharedJar jar) {
+        public HelloWorldExecutor(ESA jar) {
             super(jar);
             // Set all required fields of this executor. As we have no arguments
             // on the getMessage() method, the argTypes field has to be an empty
@@ -154,9 +154,9 @@ build-in class loader. There are two ways how to execute the _shared_ method:
 2. Create an instance of the shared method executor directly, only if the method is static **and** has no arguments:
 
     ```java
-    SharedJar jar = /*see code above*/;
+    ESA esa = /*see code above*/;
     SharedExecutor<String> executor = new SharedMethodExecutor(
-        jar, String.class, // shared JAR and return type
+        esa, String.class, // shared JAR and return type
         // the reference name doesn't has to be encrypted
         "org.example.MessageUtil", 
         "getMessage", new Class[0]
