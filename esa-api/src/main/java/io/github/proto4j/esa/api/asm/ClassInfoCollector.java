@@ -28,9 +28,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- *
- */
 public class ClassInfoCollector extends ClassVisitor {
 
     public static final Type SHADOWED_TYPE  = Type.getType(Shadow.class);

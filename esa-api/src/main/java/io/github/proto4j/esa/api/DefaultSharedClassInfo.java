@@ -18,7 +18,7 @@ package io.github.proto4j.esa.api; //@date 24.01.2023
 
 import org.objectweb.asm.Type;
 
-public class DefaultSharedClassInfo extends DefaultClassInfo
+class DefaultSharedClassInfo extends DefaultClassInfo
         implements ISharedClassInfo {
 
     public DefaultSharedClassInfo(Type type, int modifiers, RelocateDetails relocateDetails,

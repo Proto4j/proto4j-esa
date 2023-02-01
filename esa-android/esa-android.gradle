@@ -1,5 +1,7 @@
+
+
 group = "io.github.proto4j"
-archivesBaseName = "esa-gradle-plugin"
+archivesBaseName = "esa-android"
 version = "0.0.1"
 
 repositories {
@@ -7,26 +9,15 @@ repositories {
 }
 
 dependencies {
-    implementation gradleApi()
-    implementation localGroovy()
-
-    implementation 'org.apache.ant:ant-xz:1.10.12'
-    implementation 'commons-io:commons-io:2.11.0'
-
-    implementation 'org.ow2.asm:asm:9.4'
-    implementation 'io.github.proto4j:proto4j-dx:1.16'
     implementation 'io.github.proto4j:proto4j-esa-api:0.0.1'
+    // Put your android.jar in the lib/ directory
+    implementation fileTree(include: '*.jar', dir: 'lib')
 }
 
 java {
     withSourcesJar()
     withJavadocJar()
 }
-
-groovydoc {
-    use = true
-}
-
 
 publishing {
     repositories {
@@ -51,16 +42,16 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
 
-            artifactId = 'esa-gradle-plugin'
+            artifactId = 'proto4j-esa-android'
             groupId = 'io.github.proto4j'
             version = '0.0.1'
 
             pom {
-                name = 'Proto4j-ESA Gradle-Plugin'
+                name = 'Proto4j-ESA Android API'
                 packaging = 'jar'
-                artifactId = 'esa-gradle-plugin'
+                artifactId = 'proto4j-esa-android'
                 groupId = 'io.github.proto4j'
-                description = 'Gradle integration for Proto4j-ESA'
+                description = 'Android connector for Proto4j-ESA'
                 url = 'https://github.com/Proto4j/proto4j-esa'
 
                 scm {
