@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'signing'
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply from: 'esa-android.gradle'

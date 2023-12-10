@@ -1,0 +1,92 @@
+
+
+group = "io.github.proto4j"
+archivesBaseName = "proto4j-esa-api"
+version = "0.0.1"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.ow2.asm:asm:9.4'
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+javadoc {
+    options.tags = [
+            'apiNote:a:API Note:',
+            'implSpec:a:Implementation Requirements:',
+            'implNote:a:Implementation Note:'
+    ]
+}
+
+publishing {
+    repositories {
+        maven {
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/proto4j/proto4j-esa")
+            credentials {
+                username = project.findProperty("p4j.user")
+                password = project.findProperty("p4j.esa.key")
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifactId = 'proto4j-esa-api'
+            groupId = 'io.github.proto4j'
+            version = '0.0.1'
+
+            description = 'Embedded Shared Archive (ESA) API module'
+
+            pom {
+                name = 'Proto4j-ESA API'
+                packaging = 'jar'
+                artifactId = 'proto4j-esa-api'
+                groupId = 'io.github.proto4j'
+                description = 'Embedded Shared Archive (ESA) API module.'
+                url = 'https://github.com/Proto4j/proto4j-esa'
+
+                scm {
+                    connection = 'scm:git:https://github.com/Proto4j/proto4j-esa'
+                    developerConnection = 'scm:git:https://github.com/Proto4j/proto4j-esa'
+                    url = 'https://github.com/Proto4j/proto4j-esa'
+                }
+
+                licenses {
+                    license {
+                        name = 'Apache 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'Proto4j-Group'
+                        name = 'Proto4j'
+                        email = 'not@supported.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}

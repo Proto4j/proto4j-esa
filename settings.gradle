@@ -1,0 +1,5 @@
+rootProject.name = 'proto4j-esa'
+include 'esa-api'
+include 'esa-android'
+include 'esa-gradle-plugin'
+

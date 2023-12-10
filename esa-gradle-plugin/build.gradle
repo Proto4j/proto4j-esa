@@ -1,0 +1,8 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'maven-publish'
+    id 'signing'
+}
+
+apply from: 'esa-gradle-plugin.gradle'

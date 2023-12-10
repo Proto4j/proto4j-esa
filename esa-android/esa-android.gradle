@@ -1,0 +1,84 @@
+
+
+group = "io.github.proto4j"
+archivesBaseName = "esa-android"
+version = "0.0.1"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.github.proto4j:proto4j-esa-api:0.0.1'
+    // Put your android.jar in the lib/ directory
+    implementation fileTree(include: '*.jar', dir: 'lib')
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+publishing {
+    repositories {
+        maven {
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/proto4j/proto4j-esa")
+            credentials {
+                username = project.findProperty("p4j.user")
+                password = project.findProperty("p4j.esa.key")
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifactId = 'proto4j-esa-android'
+            groupId = 'io.github.proto4j'
+            version = '0.0.1'
+
+            pom {
+                name = 'Proto4j-ESA Android API'
+                packaging = 'jar'
+                artifactId = 'proto4j-esa-android'
+                groupId = 'io.github.proto4j'
+                description = 'Android connector for Proto4j-ESA'
+                url = 'https://github.com/Proto4j/proto4j-esa'
+
+                scm {
+                    connection = 'scm:git:https://github.com/Proto4j/proto4j-esa'
+                    developerConnection = 'scm:git:https://github.com/Proto4j/proto4j-esa'
+                    url = 'https://github.com/Proto4j/proto4j-esa'
+                }
+
+                licenses {
+                    license {
+                        name = 'Apache 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'Proto4j-Group'
+                        name = 'Proto4j'
+                        email = 'not@supported.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}

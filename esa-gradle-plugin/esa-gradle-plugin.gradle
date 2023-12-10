@@ -1,0 +1,93 @@
+group = "io.github.proto4j"
+archivesBaseName = "esa-gradle-plugin"
+version = "0.0.1"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+
+    implementation 'org.apache.ant:ant-xz:1.10.12'
+    implementation 'commons-io:commons-io:2.11.0'
+
+    implementation 'org.ow2.asm:asm:9.4'
+    implementation 'io.github.proto4j:proto4j-dx:1.16'
+    implementation 'io.github.proto4j:proto4j-esa-api:0.0.1'
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+groovydoc {
+    use = true
+}
+
+
+publishing {
+    repositories {
+        maven {
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/proto4j/proto4j-esa")
+            credentials {
+                username = project.findProperty("p4j.user")
+                password = project.findProperty("p4j.esa.key")
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifactId = 'esa-gradle-plugin'
+            groupId = 'io.github.proto4j'
+            version = '0.0.1'
+
+            pom {
+                name = 'Proto4j-ESA Gradle-Plugin'
+                packaging = 'jar'
+                artifactId = 'esa-gradle-plugin'
+                groupId = 'io.github.proto4j'
+                description = 'Gradle integration for Proto4j-ESA'
+                url = 'https://github.com/Proto4j/proto4j-esa'
+
+                scm {
+                    connection = 'scm:git:https://github.com/Proto4j/proto4j-esa'
+                    developerConnection = 'scm:git:https://github.com/Proto4j/proto4j-esa'
+                    url = 'https://github.com/Proto4j/proto4j-esa'
+                }
+
+                licenses {
+                    license {
+                        name = 'Apache 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'Proto4j-Group'
+                        name = 'Proto4j'
+                        email = 'not@supported.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
